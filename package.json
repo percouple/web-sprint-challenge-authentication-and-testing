@@ -5,6 +5,8 @@
   "scripts": {
     "start": "node index.js",
     "server": "nodemon index.js",
+    "dev": "node index.js",
+    "debug": "nodemon --inspect index.js",
     "migrate": "knex migrate:latest",
     "test": "cross-env NODE_ENV=testing jest --verbose --runInBand --silent"
   },
