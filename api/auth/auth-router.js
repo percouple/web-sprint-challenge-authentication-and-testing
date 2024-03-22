@@ -2,15 +2,14 @@ const validateRegisterer = require("../middleware/validateRegisterer");
 const usernameExists = require("../middleware/usernameExists");
 const router = require("express").Router();
 const DataOps = require("../DataOps");
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 router.post(
   "/register",
   validateRegisterer,
   usernameExists,
   async (req, res, next) => {
-
     // Check for existing username
     if (req.usernameExists) {
       return next({ status: 400, message: "username taken" });
@@ -20,19 +19,18 @@ router.post(
     req.body.password = bcrypt.hashSync(req.body.password, 6);
 
     await DataOps.createUser(req.body)
-    .then((result) => {
-      
-      // Constructing response object
-      const [id] = result;
-      const response = {
-        id: id,
-        username: req.body.username,
-        password: req.body.password
-      }
+      .then((result) => {
+        // Constructing response object
+        const [id] = result;
+        const response = {
+          id: id,
+          username: req.body.username,
+          password: req.body.password,
+        };
 
-      res.status(200).json(response);
-    })
-    .catch(next)
+        res.status(200).json(response);
+      })
+      .catch(next);
 
     /*
     IMPLEMENT
@@ -52,25 +50,25 @@ router.post(
 );
 
 router.post("/login", validateRegisterer, usernameExists, (req, res, next) => {
-
   // Create web token
   const generateToken = (user) => {
     const payload = {
       sub: user.id,
       iat: Math.floor(Date.now() / 1000),
-      exp: Math.floor(Date.now() / 1000) + (60 * 60 * 24)
-    }
+      exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24,
+    };
 
-    const options = {
+    const options = {};
 
-    }
-
-    return jwt.sign(payload, 'openSesame', options)
-  }
+    return jwt.sign(payload, "openSesame", options);
+  };
 
   // 4- On FAILED login due to `username` not existing in the db, or `password` being incorrect,
   //   the response body should include a string exactly as follows: "invalid credentials".
-  if (!req.usernameExists || !bcrypt.compareSync(req.body.password, req.bcryptPassword)) {
+  if (
+    !req.usernameExists ||
+    !bcrypt.compareSync(req.body.password, req.bcryptPassword)
+  ) {
     return next({ status: 400, message: "invalid credentials" });
   }
 
@@ -80,9 +78,9 @@ router.post("/login", validateRegisterer, usernameExists, (req, res, next) => {
   //     "message": "welcome, Captain Marvel",
   //     "token": "eyJhbGciOiJIUzI ... ETC ... vUPjZYDSa46Nwz8"
   //   }
-  res.status(200).json({ 
+  res.status(200).json({
     message: `welcome, ${req.body.username}`,
-    token: generateToken(req.body) 
+    token: generateToken(req.body),
   });
 
   // IMPLEMENT
@@ -93,7 +91,6 @@ router.post("/login", validateRegisterer, usernameExists, (req, res, next) => {
   //     "username": "Captain Marvel",
   //     "password": "foobar"
   //   }
-  
 });
 
 module.exports = router;
