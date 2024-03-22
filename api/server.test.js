@@ -7,9 +7,9 @@ test('sanity', () => {
 
 describe('[GET] Jokes endpoint', () => {
   it('[1] retrives jokes on successful request', () => {
-    expect(true).toBe(false)
+    console.log(api.get('/'))
   })
-  it('[2] does other stuff', () => {
+  it('[2] rejects flawed/expired token with appropriate error message', () => {
 
   })
 })

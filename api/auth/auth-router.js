@@ -4,6 +4,7 @@ const router = require("express").Router();
 const DataOps = require("../DataOps");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const ENV_JWT_SECRET = process.env.ENV_JWT_SECRET || 'openplz';
 
 router.post(
   "/register",
@@ -60,7 +61,7 @@ router.post("/login", validateRegisterer, usernameExists, (req, res, next) => {
 
     const options = {};
 
-    return jwt.sign(payload, "openSesame", options);
+    return jwt.sign(payload, ENV_JWT_SECRET, options);
   };
 
   // 4- On FAILED login due to `username` not existing in the db, or `password` being incorrect,
@@ -78,9 +79,12 @@ router.post("/login", validateRegisterer, usernameExists, (req, res, next) => {
   //     "message": "welcome, Captain Marvel",
   //     "token": "eyJhbGciOiJIUzI ... ETC ... vUPjZYDSa46Nwz8"
   //   }
+  const token = generateToken(req.body)
+  res.header('Authorization', `Bearer ${token}`);
+
   res.status(200).json({
     message: `welcome, ${req.body.username}`,
-    token: generateToken(req.body),
+    token: token,
   });
 
   // IMPLEMENT
