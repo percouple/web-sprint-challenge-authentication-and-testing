@@ -6,11 +6,14 @@ const { findUsers } = require("../DataOps");
 module.exports = async (req, res, next) => {
   console.log("CHECKING USERNAME EXISTS");
   const userArray = await findUsers();
-  if (
-    userArray.filter((user) => {
-      return user.username === req.body.username;
-    }).length
-  ) {
+  const user = userArray.filter((user) => {
+      if (user.username === req.body.username) {
+        return user;
+      }
+  })
+  if (user.length) {
+    req.body.id = user[0].id;
+    req.bcryptPassword = user[0].password;
     req.usernameExists = true;
   } else {
     req.usernameExists = false;
