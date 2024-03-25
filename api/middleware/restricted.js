@@ -9,7 +9,7 @@ module.exports = (req, res, next) => {
 
   // 2- On missing token in the Authorization header,
   // the response body should include a string exactly as follows: "token required".
-  if (!userToken) {
+  if (!userToken === undefined) {
     next({ status: 401, message: "token required" });
   }
 
