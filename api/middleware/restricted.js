@@ -5,8 +5,12 @@ module.exports = (req, res, next) => {
 
   console.log(req.headers.authorization)
 
-  const userToken = req.headers.authorization
-  ? req.headers.authorization.split(" ")[1]
+  const [userToken] = req.headers.authorization
+  ? req.headers.authorization.split(" ").filter((element) => {
+    if (element !== "Bearer") {
+      return element;
+    }
+  })
   : false;
 
   console.log(userToken)
