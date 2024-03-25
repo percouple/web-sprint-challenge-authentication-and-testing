@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const ENV_JWT_SECRET = process.env.ENV_JWT_SECRET || "openplz";
 
 module.exports = (req, res, next) => {
+  console.log(req.headers.authorization)
   const userToken = req.headers.authorization
     ? req.headers.authorization.split(" ")[1]
     : undefined;
@@ -11,6 +12,7 @@ module.exports = (req, res, next) => {
   if (!userToken) {
     next({ status: 401, message: "token required" });
   }
+
 
   try {
     // 1- On valid token in the Authorization header, call next.

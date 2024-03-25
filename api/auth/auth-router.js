@@ -6,6 +6,19 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const ENV_JWT_SECRET = process.env.ENV_JWT_SECRET || 'openplz';
 
+// Create web token
+const generateToken = (user) => {
+  const payload = {
+    sub: user.id,
+    iat: Math.floor(Date.now() / 1000),
+    exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24,
+  };
+
+  const options = {};
+
+  return jwt.sign(payload, ENV_JWT_SECRET, options);
+};
+
 router.post(
   "/register",
   validateRegisterer,
@@ -51,18 +64,6 @@ router.post(
 );
 
 router.post("/login", validateRegisterer, usernameExists, (req, res, next) => {
-  // Create web token
-  const generateToken = (user) => {
-    const payload = {
-      sub: user.id,
-      iat: Math.floor(Date.now() / 1000),
-      exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24,
-    };
-
-    const options = {};
-
-    return jwt.sign(payload, ENV_JWT_SECRET, options);
-  };
 
   // 4- On FAILED login due to `username` not existing in the db, or `password` being incorrect,
   //   the response body should include a string exactly as follows: "invalid credentials".
@@ -97,4 +98,4 @@ router.post("/login", validateRegisterer, usernameExists, (req, res, next) => {
   //   }
 });
 
-module.exports = router;
+module.exports = router, generateToken;
