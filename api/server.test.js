@@ -48,7 +48,7 @@ describe("endpoint tests", () => {
     it("[2] rejects missing token with appropriate error message", async () => {
       const response = await request(server)
         .get("/api/jokes")
-        .set("Authorization", "Bearer");
+        .set("Authorization", "");
       expect(response.status).toBe(401);
       const responseBody = JSON.parse(response.text);
       expect(responseBody).toStrictEqual({ message: "token required" });
