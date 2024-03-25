@@ -1,11 +1,12 @@
 const jwt = require("jsonwebtoken");
-const ENV_JWT_SECRET = process.env.ENV_JWT_SECRET || "openplz";
+const ENV_JWT_SECRET = process.env.ENV_JWT_SECRET || "openSesame";
 
 module.exports = (req, res, next) => {
-  console.log(req.headers.authorization)
   const userToken = req.headers.authorization
-    ? req.headers.authorization.split(" ")[1]
-    : undefined;
+  ? req.headers.authorization.split(" ")[1]
+  : undefined;
+  
+  console.log(userToken)
 
   // 2- On missing token in the Authorization header,
   // the response body should include a string exactly as follows: "token required".

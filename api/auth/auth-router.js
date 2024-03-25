@@ -4,7 +4,7 @@ const router = require("express").Router();
 const DataOps = require("../DataOps");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const ENV_JWT_SECRET = process.env.ENV_JWT_SECRET || 'openplz';
+const ENV_JWT_SECRET = process.env.ENV_JWT_SECRET || 'openSesame';
 
 // Create web token
 const generateToken = (user) => {
