@@ -3,25 +3,22 @@ const ENV_JWT_SECRET = process.env.ENV_JWT_SECRET || "openSesame";
 
 module.exports = (req, res, next) => {
 
+  // 2- On missing token in the Authorization header,
+  // the response body should include a string exactly as follows: "token required".
+  if (!req.headers.authorization) {
+    next({ status: 401, message: "token required" });
+  }
   console.log(req.headers.authorization)
 
-  const [userToken] = req.headers.authorization
-  ? req.headers.authorization.split(" ").filter((element) => {
+  const [userToken] = req.headers.authorization.split(" ")
+  .filter((element) => {
     if (element !== "Bearer") {
       return element;
     }
   })
-  : false;
 
   console.log(userToken)
-
-  // 2- On missing token in the Authorization header,
-  // the response body should include a string exactly as follows: "token required".
-  if (userToken === false) {
-    next({ status: 401, message: "token required" });
-  }
-
-
+  
   try {
     // 1- On valid token in the Authorization header, call next.
     const validatedUser = jwt.verify(userToken, ENV_JWT_SECRET);
